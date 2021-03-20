@@ -193,3 +193,4 @@ dzielKlawiatura<-function(){
   v
 }
 
+
