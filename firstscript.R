@@ -2,14 +2,17 @@ install.packages("httr")
 install.packages("jsonlite")
 library(httr)
 library(jsonlite)
-#require()
+#require() - zwróci false jesli się nie uda (przydaje się w funkcjach)
 
 print("hello")
 endpoint <- "https://api.openweathermap.org/data/2.5/weather?q=Warszawa&appid=1765994b51ed366c506d5dc0d0b07b77"
 getWeather<- GET(endpoint)
 #getWeather$content
+#pobieramy content jako text
 weatherText <- content(getWeather,"text")
+#z JSON pobranego przez GET tworzymy obiekt w R
 weatherJson <- fromJSON(weatherText,flatten = TRUE)
+#konwertujemy do DF
 weatherDF <- as.data.frame(weatherJson)
 View(weatherDF)
 
