@@ -45,6 +45,7 @@ abs(-1)
 
 #1.2 Poważniejsze zastosowania
 
+#funkcja jednolinijkowa
 foo <- function(x) x^3
 
 #Własne funkcje
@@ -71,7 +72,7 @@ Sieve(1000)
 plot(height ~ weight, data = women)
 abline(lm(height ~ weight, data = women), col = "blue")
 
-#Analizy statystyczne - test czy możemy odrzucić założenie, ze rozkład jest normalny
+#Analizy statystyczne - Shapiro-Wilk normality test - test czy możemy odrzucić założenie, ze rozkład jest normalny
 shapiro.test(rnorm(10))
 shapiro.test(runif(10))
 
@@ -101,7 +102,7 @@ ls()
 #czyści obszar roboczy (Environment)
 rm(x)
 ls()
-#Ostrożnie z poniższą komendą!
+#Ostrożnie z poniższą komendą - czyści cały obszar roboczy
 rm(list = ls())
 #czyści pamięć - garbage collector
 gc()
@@ -171,14 +172,15 @@ x <- c(1,2,3)
 x <- c("a", "B")
 x <- c(1, "a")
 
-#tworzy ciąg liczb od 1 do 10, 
-#ale bardziej zasobożerne niż w Python, bo wszystko tutaj ladowane jest od razu do pamieci
+#tworzy ciąg arytmetyczny liczb od 1 do 10, 
+#ale bardziej zasobożerne niż range w Python, bo wszystko tutaj ladowane jest od razu do pamieci
 1:10
 #: ma pierwszenstwo - mnozy wszystkie elementy wektora *2
 1:10*2
 
 #2.2.1 Pomocne funkcje
 
+#wektor losowo posortowany
 x <- sample(1:10, 10)
 x
 #dlugosc wektora
@@ -189,6 +191,7 @@ rev(x)
 unique(x)
 sort(x)
 sort(x, decreasing = TRUE)
+#informacja jakie indeksy aby posortowac ten wektor???
 order(x)
 x[order(x)]
 #suma
@@ -209,12 +212,17 @@ any(x > 0)
 
 #2.2.2 Kopiowanie wektorów
 
+#replikowanie wektora - co bedziemy kopiowac i jak
+#wektor od 1:5 razy 3
 x <- rep(1:5,3)
 x
+
+#wektor od 1:5, pierwszy element raz, drugi element 2 razy, trzeci element 3 razy...
 x <- rep(1:5,1:5)
 x
-#to nie zadziala, bo ...
+#to nie zadziala, bo nie dziala to na wektorze
 x <- rep(3, 1:5)
+#dowolne wektory, nie tylko liczbowe
 x <- rep(c('a','b','c','d','e'), 1:5)
 x
 
@@ -229,6 +237,7 @@ x[10]
 x[2:5]
 #wszystko oprocz wartosci pierwszej
 x[-1]
+#oprócz wartości od 1 do 10
 x[-(1:10)]
 #nie da sie jednoczesnie wyciac jedna wartosc i wyciagnac inna powinno byc x[-1][2]
 x[c(-1,2)]
@@ -267,6 +276,7 @@ x
 #tworzy wektor podwojnie powtorzony
 c(y, y)
 
+#domyslnie R tworzy druga kopie y i dodaje do siebie x i y!!!
 x + y
 
 y <- 1:3
@@ -298,7 +308,7 @@ y <- matrix(sample(1:20, 20), nrow = 5, ncol = 4)
 #mnozenie macierzy metoda Coshiego - w algebrze liniowej czesciej sie uzywa tego
 x %*% y
 
-#metoda Hadamrda - metoda naiwna
+#metoda Hadamarda - metoda naiwna
 x*y
 x*x
 
@@ -307,7 +317,7 @@ log(x)
 #dodaj 2 do wszystkich elementow macierzy
 x+2
 
-#Łączenie macierzy
+#Łączenie macierzy wierszami i kolumnami
 rbind(x, x)
 cbind(x, x)
 
@@ -319,10 +329,10 @@ cbind(x, x)
 #b)Wypisz wszystkie liczby z tej macierzy podzielne przez 7.
 #pierwsza wersja
 x <- matrix(1:100, nrow = 10, ncol = 10, byrow = TRUE)
-x <- x[x%%7==0]
-x
+y <- x[x%%7==0]
+y
 
-#druga wersja - z sortowaniem
+#druga wersja - z sortowaniem (bo idzie po kolumnach) - which
 x <- matrix(1:100, nrow = 10, ncol = 10)
 x[which(x%%7==0)]
 
@@ -349,7 +359,6 @@ x[[1]][3]
 
 
 #2.5 Ramki danych (data frames)
-
 data(iris)
 
 head(iris)
@@ -359,6 +368,10 @@ str(iris)
 
 names(iris)
 
+#WAZNE - wybieramy jedna kolumne, wiec dostajemy WEKTOR o innym typie
+str(iris[,1])
+#dostajemy wektor
+typeof(iris[,1])
 
 #indeksowanie jak listy
 iris[[1]]
@@ -430,8 +443,10 @@ if (x > 0) cat("x jest większy od 0.\n") else cat("x jest mniejszy od 0.\n")
 if (0) cat("Prawda!\n") else cat("Fałsz!\n")
 if (12) cat("Prawda!\n") else cat("Fałsz!\n")
 
-#blad trzeba uzyc any
+#warning o pierwszym elemencie, trzeba uzyc any
 if (c(-1, 0, 1) > 0) cat("Oj, chyba nic z tego!\n")
+#poprawnie z any
+if (any(c(-1, 0, 1) > 0)) cat("Oj, chyba nic z tego!\n")
 
 if (x < 0 | x > 1) cat("Prawda!\n") else cat("Fałsz!\n")
 
@@ -450,6 +465,7 @@ if (x > 0) {
 }
 
 #3.2 Dla wektorów
+#CZESTO UZYWANE
 ifelse(1:10 > 5, 1, 0)
 
 #Zadanie 2.7
@@ -458,13 +474,13 @@ ifelse(1:10 > 5, 1, 0)
 #"b" liczby od 3 do 7, i "c" liczby większe od 7.
 #V1
 x <- 1:10
-ifelse(x<3, 'a', ifelse(x<7, 'b', 'c'))
+ifelse(x<3, 'a', ifelse(x<=7, 'b', 'c'))
 #v2
-ifelse(1:10 < 3, "a", ifelse(1:10<8, "b","c"))
+ifelse(1:10 < 3, "a", ifelse(1:10<=7, "b","c"))
 #v3 - z warningiem
 x<-1:10
 x[x<3]<-'a'
-x[as.numeric(x)>=3&as.numeric(x)<7]<-'b'
+x[as.numeric(x)>=3&as.numeric(x)<=7]<-'b'
 x[as.numeric(x)>=7]<-'c'
 x
 
@@ -521,7 +537,7 @@ while (i < 5) {
 
 #5. Funkcje
 #FUNKCJE tez sa MALO WYDAJNE
-#domyslnie zwracana jest wartosc z osatniego wiersza
+#domyslnie zwracana jest wartosc z ostatniego wiersza
 
 Square <- function(x){
   x*x
@@ -544,7 +560,9 @@ Square2 <- function(x){
   z <- x+2
 }
 
-Square2(8)
+#zwraca wartosc z ostatniej linijki funkcji, czyli x+2
+k <-Square2(8)
+k
 
 #Rekurencja!
 #silnia

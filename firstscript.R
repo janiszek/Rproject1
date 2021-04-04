@@ -18,26 +18,27 @@ View(weatherDF)
 
 x <- 123.4
 x <- "string"
+# podstaw 100 liczb od 1 do 100
 x <- 1:100
 
 ?vector
 #true nawet dla 1 wartosci
 is.vector(x)
-#podaje typ wektora
+#podaje typ wektora - indeksowanie wektorow od 1!!!
 class(x)
 typeof(x)
 
 #laczenie - combine
 x <- c(1,2,3,4,5)
 x
-#konwertuje do typu numeric
+#konwertuje do typu numeric, dlatego, ze FALSE jest numeric
 x<-c(x,FALSE)
 class(x)
 #zamiana na wartosc logiczna
 as.logical(x)
 #ale x ma nadal liczby!!!
 x
-#POPRAWIENIE
+#POPRAWIENIE z podstawieniem do zmiennej
 y<-as.logical(x)
 y
 z<-as.integer(y)
@@ -46,6 +47,7 @@ z
 getwd()
 #setwd("...")
 
+#po połączeniu wektorów typ będzie 
 x2 <-c(1.2,2.2,3.3,4.4)
 v<-c("1","2","3","4")
 z2 <- c(x,x2,v)
@@ -54,8 +56,10 @@ z2
 bool <- vector(mode = 'logical' , length=0)
 bool
 
+
+#to sa operacje na macierzach - idzie na okragla po pierwszej i drugiej macierzy
 x<- c(1,2,3,4,5,6,7,8,9,10)
-y<-c(2,4)
+y<-c(2,4,8)
 z1<-x+y
 z2<-x-y
 z3<-x*y
@@ -69,17 +73,18 @@ wynik2 <-x%%y
 wynik3 <-x%/%y
 
 
-#lista wektorow
+#lista wektorow - tutaj mamy 5 wektorów jednoelementowych w liscie
 lista <- list(1,2,3,4,5)
+#listy mogą mieć wektory różnej dlugosci i typu
 lista<- list(c(1,2),c("a","b"), wynik3)
 wynik[1]
 lista[3]
-#nie dziala - to zwraca liste, a nie wektor
+#nie dziala - to zwraca liste, a nie wektor - to samo co class(lista[3])
 class(lista[3][1])
 #aby pobrac wektor z listy to trzeba podwojny nawias kwadratowy [[]]
 class(lista[[3]])
 
-#wybiera z listy 3 tylko te ktore spelniaja warunek
+#filtrowanie wektorów w listach - wybiera z listy 3 tylko te ktore spelniaja warunek
 lista[[3]] [lista[[3]]>1]
 
 #mamy wektor logiczny
@@ -92,7 +97,8 @@ wynik <- v1*2
 #filtruj tylko te, ktora sa >10
 wynik [wynik>10]
 
-#uzycie sequence
+
+#uzycie sequence - np. pobieranie wielu plikow
 sekwencja <- seq(1,10,0.5)
 sekwencja <- seq(1,10,1)
 sekwencja <- seq(10,1,-1)
@@ -110,17 +116,20 @@ plecf2<-factor(c("mezczyzna", "kobieta","mezczyzna","kobieta"),
                levels=c("mezczyzna","kobieta"))
 unclass(plecf2)
 
-#podstaw wartosc dla range
+
+#podstaw wartosc NA dla range
 plecf[3:8]<-NA
 #sprawdz is null
 brakujace<-is.na(plecf)
 
 #negowanie wartości - !
-!brakuje
+!brakujace
 
-#wybierz te wartosci, ktore nie sa na
+#wybierz te wartosci, ktore nie sa NA
 wplec <- plecf[!brakujace]
+#alternatywa
 plecf[complete.cases(plecf)]
+
 
 #macierze
 mojaMacierz <- matrix(nrow=10,ncol=9)
@@ -146,11 +155,13 @@ mojaMacierz[2,3]
 
 v1
 wynik
-#bindowanie - kolumnami lub wierszami
+#bindowanie (laczenie dwoch wektorów)- kolumnami lub wierszami
 res <- cbind(v1,wynik)
 res
 res2 <- rbind(v1, wynik)
 res2
+
+
 
 #dataframe
 df <- data.frame(index=1:3,
@@ -171,6 +182,9 @@ hello<-function(x){
   print(paste0(x," witaj R i R studio!!"))
 }
 
+hello('Ala')
+
+# funkcja nie jest dobrze odporna na wektor
 dziel<-function(x,y){
   if (y==0){
     wynik<-" nie dziel przez zero"
@@ -181,7 +195,11 @@ dziel<-function(x,y){
   wynik
 }
 
-#pobieranie danych o uzytkownika
+dziel(10,2)
+dziel(10,0)
+
+
+#pobieranie danych od uzytkownika
 dzielKlawiatura<-function(){
   komunikat<-"podaj 2 liczby oddzielone przecinkiem: "
   wektorOdp<-as.numeric(strsplit(readline(komunikat),",")[[1]])
@@ -196,4 +214,5 @@ dzielKlawiatura<-function(){
   v
 }
 
-
+#wywolanie funkcji
+dzielKlawiatura()
