@@ -13,9 +13,8 @@ divider<-function(x,y){
     result<-"Do not divide by 0!"
   }
   else{
-    #result<-ifelse(x%%y==0,cat("The number: ",y," is a divider of:",x),
-    #               cat("The number: ",y," is NOT a divider of:",x))
-    result<-ifelse(x%%y==0,"It is a divider","It is NOT a divider")
+    result<-ifelse(x%%y==0,paste("The number: ",y," is a divider of:",x),
+                   paste("The number: ",y," is NOT a divider of:",x))
   }
   result
 }
@@ -57,6 +56,7 @@ factorPearson<-function(x,y){
 factorPearson(1:4,4:6)
 factorPearson(5:7,4:6)
 
+
 df2<-read.csv2("data/dane.csv")
 #View(df2)
 str(df2)
@@ -76,7 +76,7 @@ factorPearson(waga,wiek)
 # W kolejnych wierszach zawartość wierszy ramki danych 
 # (tyle wierszy ile podaliśmy w argumencie ile. ile=1 oznacza, że gdy użytkownik nie poda żadnej wartości jako parametr, domyślna wartością będzie 1)
 
-createDataFrame <-function(count=1){
+createIntegerDataFrame <-function(count=1){
   message<- "Insert names of columns separated by comma: "
   columns<- as.character(strsplit(readline(message),",")[[1]])
   df <- as.data.frame(matrix(ncol = length(columns), nrow = 0))
@@ -94,7 +94,7 @@ createDataFrame <-function(count=1){
   df
 }
 
-createDataFrame(3)
+createIntegerDataFrame(3)
 
 
 #5 Napisz funkcję, która pobiera sciezkeKatalogu, nazweKolumny, jakaFunkcje, DlaIluPlikow i liczy: 
@@ -108,14 +108,18 @@ countFromFiles <- function(path="smog_data",colParam="142_humidity",functionPara
   result <- 0
   if (length(fileInDir)>0){
     totalDF<- data.frame()
+    #add X to the column name as this is how R is behaving for column names starting with a digit
     colName <- paste('X',colParam,sep='')
+    #just in case there is less files in the directory available
     iterations<- min(length(fileInDir),fileCount)
     for (i in 1:iterations) {
       fileName<-paste(path,fileInDir[i],sep='/')
       cat(paste(fileName, "\n"))
-      tempDF<-read.csv(fileName)
+      #treat empty and NA strings as na value
+      tempDF<-read.csv(fileName, na.strings=c("","NA"))
       totalDF<-rbind(totalDF,tempDF)
     }
+    #na.omit will ignore the na values for given column
     if (functionParam=="mean"){
       cat(paste("Mean for column:", colParam, "\n"))
       result<- mean(na.omit(totalDF[,colName]))
@@ -140,6 +144,5 @@ countFromFiles <- function(path="smog_data",colParam="142_humidity",functionPara
   }
   result
 }
-
 
 countFromFiles(colParam="142_pressure",functionParam="median",fileCount=100)
